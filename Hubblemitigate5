@@ -1,0 +1,9 @@
+function realizePnL(address trader, int256 realizedPnl) external onlyClearingHouse {
+    // -ve PnL will reduce balance
+    if (realizedPnl != 0) {
+        int256 newBalance = margin[VUSD_IDX][trader] + realizedPnl;
+        require(newBalance >= 0, "Insufficient VUSD balance");
+        margin[VUSD_IDX][trader] = newBalance;
+        emit PnLRealized(trader, realizedPnl, block.timestamp);
+    }
+}
