@@ -1,0 +1,21 @@
+function removeMargin(uint idx, uint256 amount) override external whenNotPaused {
+    address trader = _msgSender();
+
+    // Check if the contract has sufficient VUSD balance
+    require(margin[VUSD_IDX][address(this)] >= amount.toInt256(), "Insufficient VUSD balance");
+
+    // Calculate the loan repayment amount
+    int256 loanRepayment = _calculateLoanRepayment(trader, idx, amount);
+
+    // Check if the loan can be repaid
+    require(margin[VUSD_IDX][trader] + loanRepayment >= 0, "Loan cannot be repaid");
+
+    // Update the VUSD balances
+    margin[VUSD_IDX][address(this)] -= amount.toInt256();
+    margin[VUSD_IDX][trader] += loanRepayment;
+
+    // Withdraw the collateral
+    _transferOutCollateral(idx, trader, amount);
+
+    emit MarginRemoved(trader, idx, amount, _blockTimestamp());
+}
