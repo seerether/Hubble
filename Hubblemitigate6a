@@ -1,0 +1,9 @@
+function unbondShares(uint shares) external {
+    address usr = _msgSender();
+    require(_now >= unbond[user].unbondTime, "still_unbonding");
+    require(shares <= balanceOf(usr), "unbonding_too_much");
+    uint _now = _blockTimestamp();
+    uint unbondTime = ((_now + unbondPeriod) / unbondRoundOff) * unbondRoundOff;
+    unbond[usr] = UnbondInfo(shares, unbondTime);
+    emit Unbonded(usr, shares, unbondTime, _now);
+}
