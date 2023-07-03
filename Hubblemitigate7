@@ -1,0 +1,5 @@
+function _isAuctionOngoing(uint startedAt, uint expiryTime) internal view returns (bool) {
+    if (startedAt == 0) return false;
+    uint currentTimestamp = _blockTimestamp();
+    return startedAt <= currentTimestamp && currentTimestamp <= expiryTime && currentTimestamp <= expiryTime;
+}
