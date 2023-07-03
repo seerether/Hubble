@@ -1,5 +1,5 @@
 function _beforeTokenTransfer(address from, address to, uint256 amount) override internal view {
-    require(to != address(0), "transfer_to_zero_address_not_allowed");
+    require(from != address(0) && to != address(0), "Transfer to or from the zero address is not allowed");
     if (from == address(0)) return; // gas optimization for _mint
     if (!_hasWithdrawPeriodElapsed(_blockTimestamp(), unbond[from].unbondTime)) {
         require(amount <= balanceOf(from) - unbond[from].shares, "shares_are_unbonding");
