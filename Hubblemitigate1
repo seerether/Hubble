@@ -1,0 +1,11 @@
+function _liquidateSingleAmm(address trader, uint ammIndex, uint price, int toLiquidate) internal {
+    // ... existing code ...
+    (int realizedPnl, uint quoteAsset, int size, uint openNotional) = amms[ammIndex].liquidatePosition(trader, price, toLiquidate);
+    (int liquidationFee, ) = _chargeFeeAndRealizePnL(trader, realizedPnl, quoteAsset, IOrderBook.OrderExecutionMode.Liquidation);
+    
+    // Check if liquidationFee is negative
+    require(liquidationFee >= 0, "Liquidation fee cannot be negative");
+
+    marginAccount.transferOutVusd(feeSink, liquidationFee.toUint256());
+    emit PositionLiquidated(trader, ammIndex, toLiquidate, price, realizedPnl, size, openNotional, liquidationFee, _blockTimestamp());
+}
