@@ -1,0 +1,19 @@
+function _chargeFeeAndRealizePnL(
+    address trader,
+    int realizedPnl,
+    uint quoteAsset,
+    IOrderBook.OrderExecutionMode mode
+) internal returns (int toFeeSink, int feeCharged) {
+    uint feeAmount = _calculateTakerFee(quoteAsset);
+    uint traderBalance = vusd.balanceOf(trader);
+
+    require(traderBalance >= feeAmount, "Insufficient balance to cover fees");
+
+    // Deduct the fee from the trader's balance
+    vusd.transferFrom(trader, feeSink, feeAmount);
+
+    // Calculate the total fee charged including referral bonus and maker fee
+    feeCharged = feeAmount;
+
+    // ... rest of the function code ...
+}
